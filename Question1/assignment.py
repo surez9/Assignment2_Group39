@@ -5,6 +5,9 @@ ENCODE_DIR = {}
 
 DECODE_DIR = {}
 
+#TODO 1: Add comments to each method.
+#TODO 2: Optimize the program
+
 DECODE_DIR_LOWER = {}
 def init_dir(shift1, shift2):
     lowers = string.ascii_lowercase
