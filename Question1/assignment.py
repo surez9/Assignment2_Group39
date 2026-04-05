@@ -1,15 +1,18 @@
 import string
 import os   
 
-ENCODE_DIR = {}
+ENCODE_DIR: dict[str, str] = {} # Dictionary to store character mappings for encoding.
 
-DECODE_DIR = {}
+DECODE_DIR: dict[str, str] = {} # Dictionary to store character mappings for decoding, initialized as an empty dictionary.
 
-#TODO 1: Add comments to each method.
-#TODO 2: Optimize the program
-
-DECODE_DIR_LOWER = {}
-def init_dir(shift1, shift2):
+def init_dir(shift1: int, shift2: int):
+    """
+    Initializes the encoding and decoding dictionaries based on the provided shift values.
+    
+    Args:
+        shift1 (int): The first shift value for encoding.
+        shift2 (int): The second shift value for encoding.
+    """
     lowers = string.ascii_lowercase
     uppers = string.ascii_uppercase
     for i, char in enumerate(lowers):
@@ -31,16 +34,30 @@ def init_dir(shift1, shift2):
         ENCODE_DIR[char] = new_char
         DECODE_DIR[new_char] = char
 
-def read_file():
+def read_file(file_name: str) -> str:
+    """
+    Reads the content of the specified file and returns it as a string.
+    Args:
+        file_name (str): The name of the file to read from.
+    Returns:
+        str: The content of the specified file.
+    """
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(current_dir, 'raw_text.txt')
+    file_path = os.path.join(current_dir, file_name)
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, 'r', encoding='utf-8') as file:
             return file.read()
     except Exception as e:
             print(f"Error reading from file: {e}")
 
-def encode_text(string_line):
+def encode_text(string_line: str) -> str:
+    """
+    Encodes the input string using the ENCODE_DIR mapping.
+    Args:
+        string_line (str): The input string to be encoded.
+    Returns:
+        str: The encoded string.
+    """
     text_list = []
     for char in string_line:
         if char in ENCODE_DIR:
@@ -50,11 +67,17 @@ def encode_text(string_line):
     encoded_text = "".join(text_list)
     return encoded_text
 
-def encode_file(encoded_string):
+def encode_file(encoded_string: str, file_name: str):
+    """
+    Writes the encoded string to the specified file.
+    Args:
+        encoded_string (str): The string to be written to the file.
+        file_name (str): The name of the file to write to.
+    """
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(current_dir, 'encrypted_text.txt')
+    file_path = os.path.join(current_dir, file_name)
     try:
-        with open(file_path, 'w') as file:
+        with open(file_path, 'w',encoding='utf-8') as file:
                 file.write(encoded_string)
     except Exception as e:
             print(f"Error writing to file: {e}")
@@ -65,14 +88,14 @@ def encode_file(encoded_string):
 
 def main():
     try:
-        shift1 = int(input("Enter shift1 (integer): "))
-        shift2 = int(input("Enter shift2 (integer): "))
+        shift1 = int(input("Enter shift1 (integer): ")) 
+        shift2 = int(input("Enter shift2 (integer): ")) 
     except ValueError:
         print("Number is not valid")
         exit()
     init_dir(shift1, shift2)
-    encoded_string = encode_text(read_file())
-    encode_file(encoded_string)
+    encoded_string = encode_text(read_file('raw_text.txt'))
+    encode_file(encoded_string,'encrypted_text.txt')
 
 
 if __name__ == "__main__":
