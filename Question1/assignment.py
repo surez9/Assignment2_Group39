@@ -1,3 +1,15 @@
+'''
+    S126 HIT137 SOFTWARE NOW - Assignment 2
+
+    Group Name: DAN/EXT 39
+
+    Group Members:
+        Suresh Bhandari - S400969
+        Pujan Bhusal - S399630
+        Saqib Zia - S399396
+        Aiden Xie - S398508
+'''
+
 import string
 import os   
 
