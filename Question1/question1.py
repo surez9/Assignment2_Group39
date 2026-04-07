@@ -12,7 +12,7 @@
 
 # function to encrypt text
 def encryption(shft1, shft2):
-    data = open("raw_text.txt", "r") # opens thhe raw_text data and reads it
+    data = open("Question1/raw_text.txt", "r") # opens thhe raw_text data and reads it
     given_data= data.read()
     data.close()
 
@@ -36,13 +36,13 @@ def encryption(shft1, shft2):
         else:
             final_result += ch  # if there is no change
 
-    data = open("encrypted_text.txt", "w")
+    data = open("Question1/encrypted_text.txt", "w")
     data.write(final_result)
     data.close()
 
     # this function will decrypt the given data or text
 def decryption(shft1, shft2):
-    data = open("encrypted_text.txt", "r") #opens the encrypted data and reads it
+    data = open("Question1/encrypted_text.txt", "r") #opens the encrypted data and reads it
     given_data = data.read()
     data.close()
 
@@ -66,17 +66,17 @@ def decryption(shft1, shft2):
         else:
             final_result += ch
 
-    data = open("decrypted_text.txt", "w")
+    data = open("Question1/decrypted_text.txt", "w")
     data.write(final_result)
     data.close()
 
     # function for verification
 def verification():
-    s1 = open("raw_text.txt", "r")
+    s1 = open("Question1/raw_text.txt", "r")
     real_text= s1.read()
     s1.close()
 
-    s2 = open("decrypted_text.txt", "r")
+    s2 = open("Question1/decrypted_text.txt", "r")
     decrypted = s2.read()
     s2.close()
 
