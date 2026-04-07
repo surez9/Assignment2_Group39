@@ -86,10 +86,10 @@ def verification():
         print("Sorry Decryption failed ")
 
 # main program
-shft1 = int(input("please enter shft1: "))
-shft2 = int(input("please enter shft2: "))
+shift1 = int(input("please enter shft1: "))
+shift2 = int(input("please enter shft2: "))
 
-encryption(shft1, shft2) #calls the encryption fuction
+encryption(shift1, shift2) #calls the encryption fuction
 input("encryption is done, press enter to continue...") # this will wait for the user to press enter before moving to the next step
-decryption(shft1, shft2) #calls the decryprion function
+decryption(shift1, shift2) #calls the decryprion function
 verification() 
