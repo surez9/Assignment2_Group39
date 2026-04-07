@@ -10,8 +10,29 @@
         Aiden Xie - S398508
 '''
 
-with open('input.txt','r') as inputFile:
-    #write code to evaluate mathematical expression from file
-    #create output file to write the output
-    inputFile.close()
+# tokenise
+def tokenise(text):
+    return text
 
+# tree
+def tree_format(text):
+    return text
+
+
+# evaluate the input file
+def evaluate_file(input_path: str) -> list[dict]:
+    f = open(input_path, "r")
+    lines = f.readlines()
+    f.close()
+
+
+    for line in lines:
+        expression = line.rstrip("\n")
+        tokens     = tokenise(expression)
+        tree       = tree_format(expression)
+    
+    return True
+
+
+# main body
+results = evaluate_file("Question2/input.txt")
