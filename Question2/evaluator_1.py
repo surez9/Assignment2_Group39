@@ -200,3 +200,163 @@ def parse(tokens):
 
 
 
+# PART 3 - TREE TO STRING
+# convert the AST back into the prefix-notation format the as the required format.
+# for example "3 + 5" -> "(+ 3 5)", "-(3+4)" -> "(neg (+ 3 4))
+
+def tree_to_string(node):
+    kind = node[0]
+
+    if kind == 'num':
+        # strip .0 off whole numbers so 5.0 shows as just 5
+        val = float(node[1])
+        return str(int(val)) if val == int(val) else node[1]
+
+    elif kind == 'neg':
+        return f'(neg {tree_to_string(node[1])})'
+
+    elif kind == 'binary':
+        _, op, left, right = node
+        # prefix notation: operator first, then left subtree, then right
+        return f'({op} {tree_to_string(left)} {tree_to_string(right)})'
+
+    else:
+        raise ValueError(f"don't know how to display node type: {kind!r}")
+
+
+# PART 4 - EVALUATOR
+# # recursively evaluate the AST and return a float
+def evaluate(node):
+    kind = node[0]
+
+    if kind == 'num':
+        return float(node[1])
+
+    elif kind == 'neg':
+        return -evaluate(node[1])
+
+    elif kind == 'binary':
+        _, op, left, right = node
+        lv = evaluate(left)
+        rv = evaluate(right)
+
+        if op == '+':
+            return lv + rv
+        elif op == '-':
+            return lv - rv
+        elif op == '*':
+            return lv * rv
+        elif op == '/':
+            if rv == 0:
+                raise ZeroDivisionError("can't divide by zero")
+            return lv / rv
+
+    raise ValueError(f"can't evaluate node type: {kind!r}")
+
+# whole numbers display without a decimal (8 not 8.0)
+def format_result(value):
+    if value == int(value):
+        return str(int(value))
+    return f'{value:.4f}'
+
+
+
+# PART 5 - MAIN FUNCTION
+# this is the main function which reads the input file,
+# processes each line, writes output.txt, returns a list of dicts.
+
+
+def evaluate_file(input_path: str) -> list[dict]:
+
+    with open(input_path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+
+    results = []
+    output_blocks = []
+
+    for raw_line in lines:
+        expr = raw_line.rstrip('\n').strip()
+
+        # assume everything is ERROR and overwrite only if it succeeds
+        record = {
+            'input':  expr,
+            'tree':   'ERROR',
+            'tokens': 'ERROR',
+            'result': 'ERROR',
+        }
+
+        try:
+            # step 1 - tokenise
+            tokens = tokenise_q2(expr)
+            token_str = tokens_to_string(tokens)
+
+            # step 2 - parse into a tree
+            tree = parse(tokens)
+            tree_str = tree_to_string(tree)
+
+            # step 3 - evaluate 
+            value = evaluate(tree)
+            record['tokens'] = token_str
+            record['tree']   = tree_str
+            record['result'] = value  # float as per the spec
+
+        except ZeroDivisionError:
+            try:
+                toks = tokenise_q2(expr)
+                record['tokens'] = tokens_to_string(toks)
+                t = parse(toks)
+                record['tree'] = tree_to_string(t)
+            except Exception:
+                pass  # shouldn't fail here since we already parsed it above
+            record['result'] = 'ERROR'
+            # anything else means we couldn't even tokenise or parse it.
+            # leave everything as ERROR.
+        except Exception:
+            record['result'] = 'ERROR'
+
+        # decide how to display the result
+        res_display = (
+            format_result(record['result'])
+            if record['result'] != 'ERROR'
+            else 'ERROR'
+        )
+
+        # build the four-line output block for this expression
+        output_blocks.append(f"Input: {record['input']}")
+        output_blocks.append(f"Tree: {record['tree']}")
+        output_blocks.append(f"Tokens: {record['tokens']}")
+        output_blocks.append(f"Result: {res_display}")
+        output_blocks.append('')  # blank line between blocks
+
+        results.append(record)
+
+    # write output.txt next to the input file
+    out_dir  = os.path.dirname(os.path.abspath(input_path))
+    out_path = os.path.join(out_dir, 'output.txt')
+    with open(out_path, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(output_blocks))
+
+    return results
+
+
+
+# To run the program: 
+# python evaluator.py sample_input.txt
+
+if __name__ == '__main__':
+    import sys
+
+    path = sys.argv[1] if len(sys.argv) > 1 else 'sample_input.txt'
+    all_results = evaluate_file(path)
+
+    for r in all_results:
+        res = (
+            format_result(r['result'])
+            if r['result'] != 'ERROR'
+            else 'ERROR'
+        )
+        print(f"Input:   {r['input']}")
+        print(f"Tree:    {r['tree']}")
+        print(f"Tokens:  {r['tokens']}")
+        print(f"Result:  {res}")
+        print()
