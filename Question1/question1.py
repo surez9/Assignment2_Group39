@@ -12,65 +12,61 @@
 
 # function to encrypt text
 def encryption(shft1, shft2):
-    data = open("Question1/raw_text.txt", "r") # opens thhe raw_text data and reads it
-    given_data= data.read()
-    data.close()
-
-    final_result = ""
-
-    for ch in given_data:
-        if ch.isupper():  # function CAPITAL LETTERS
-            if ch >= 'A' and ch <= 'M':
-                new_char = chr((ord(ch) - 65 - shft1) % 26 + 65) # in ASCII A is 65 and chr will convert the ascii number into charachter and ord will convert the charachter into ASCII number
-            else:
-                new_char = chr((ord(ch) - 65 + (shft2 ** 2)) % 26 + 65)
-            final_result += new_char
-        
-        elif ch.islower():  # For small letters
-            if ch >= 'a' and ch <= 'm':
-                new_char = chr((ord(ch) - 97 + (shft1 * shft2)) % 26 + 97) #ord(ch) this function will convert the charachter into ASCII numberr and chr will convert the numbers into charcters
-            else:
-                new_char = chr((ord(ch) - 97 - (shft1 + shft2)) % 26 + 97)
-            final_result += new_char
-
-        else:
-            final_result += ch  # if there is no change
-
-    data = open("Question1/encrypted_text.txt", "w")
-    data.write(final_result)
-    data.close()
-
-    # this function will decrypt the given data or text
-def decryption(shft1, shft2):
-    data = open("Question1/encrypted_text.txt", "r") #opens the encrypted data and reads it
-    given_data = data.read()
-    data.close()
+    file = open("Question1/raw_text.txt", "r")
+    given_data = file.read()
+    file.close()
 
     final_result = ""
 
     for ch in given_data:
         if ch.isupper():
-            if ch >= 'A' and ch <= 'M':
-                new_char = chr((ord(ch) - 65 + shft1) % 26 + 65)
-            else:
-                new_char = chr((ord(ch) - 65 - (shft2 ** 2)) % 26 + 65)
+            shift = shft1 + (shft2 ** 2)
+            new_char = chr((ord(ch) - 65 + shift) % 26 + 65)
             final_result += new_char
-        
+
         elif ch.islower():
-            if ch >= 'a' and ch <= 'm':
-                new_char = chr((ord(ch) - 97 - (shft1 * shft2)) % 26 + 97)
-            else:
-                new_char = chr((ord(ch) - 97 + (shft1 + shft2)) % 26 + 97)
+            shift = shft1 * shft2
+            new_char = chr((ord(ch) - 97 + shift) % 26 + 97)
             final_result += new_char
 
         else:
             final_result += ch
 
-    data = open("Question1/decrypted_text.txt", "w")
-    data.write(final_result)
-    data.close()
+    file = open("Question1/encrypted_text.txt", "w")
+    file.write(final_result)
+    file.close()
 
-    # function for verification
+# this function will decrypt the given data or text
+def decryption(shft1, shft2):
+    file = open("Question1/encrypted_text.txt", "r")
+    given_data = file.read()
+    file.close()
+
+    final_result = ""
+
+    for ch in given_data:
+        if ch.isupper():
+            shift = shft1 + (shft2 ** 2)
+            new_char = chr((ord(ch) - 65 - shift) % 26 + 65)
+            final_result += new_char
+
+        elif ch.islower():
+            shift = shft1 * shft2
+            new_char = chr((ord(ch) - 97 - shift) % 26 + 97)
+            final_result += new_char
+
+        else:
+            final_result += ch
+
+    file = open("Question1/decrypted_text.txt", "w")
+    file.write(final_result)
+    file.close()
+
+    file = open("Question1/decrypted_text.txt", "w")
+    file.write(final_result)
+    file.close()
+
+# function for verification
 def verification():
     s1 = open("Question1/raw_text.txt", "r")
     real_text= s1.read()
