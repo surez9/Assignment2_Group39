@@ -10,7 +10,7 @@
         Aiden Xie - S398508
 '''
 
-# tokenise
+ # tokenizer
 def tokenise(text):
     tokens = []
     i = 0
@@ -33,10 +33,10 @@ def tokenise(text):
             tokens.append({"type": "RPAREN", "value": ")"})
             i += 1
         else:
-            return f"Error: Unknown character {text[i]}"
+            raise ValueError("Unknown character: " + text[i])
     tokens.append({"type": "END", "value": "END"})
     return tokens
-
+ 
 def tokens_to_string(tokens):
     result = ""
     for t in tokens:
@@ -46,8 +46,15 @@ def tokens_to_string(tokens):
             result += "[" + t["type"] + ":" + t["value"] + "] "
     return result.strip()
 
-
-#Parser
+#parser 
+def peek(tokens, pos):
+    return tokens[pos[0]]
+ 
+def consume(tokens, pos):
+    token = tokens[pos[0]]
+    pos[0] += 1
+    return token
+ 
 def parse_expr(tokens, pos):
     left = parse_term(tokens, pos)
     while peek(tokens, pos)["type"] == "OP" and peek(tokens, pos)["value"] in ("+", "-"):
@@ -55,7 +62,7 @@ def parse_expr(tokens, pos):
         right = parse_term(tokens, pos)
         left  = ("binop", op, left, right)
     return left
-
+ 
 def parse_term(tokens, pos):
     left = parse_factor(tokens, pos)
     while peek(tokens, pos)["type"] == "OP" and peek(tokens, pos)["value"] in ("*", "/"):
@@ -63,7 +70,7 @@ def parse_term(tokens, pos):
         right = parse_factor(tokens, pos)
         left  = ("binop", op, left, right)
     return left
-
+ 
 def parse_factor(tokens, pos):
     if peek(tokens, pos)["type"] == "OP" and peek(tokens, pos)["value"] == "-":
         consume(tokens, pos)
@@ -76,7 +83,7 @@ def parse_factor(tokens, pos):
         right = parse_primary(tokens, pos)
         left  = ("binop", "*", left, right)
     return left
-
+ 
 def parse_primary(tokens, pos):
     token = peek(tokens, pos)
     if token["type"] == "NUM":
@@ -90,15 +97,10 @@ def parse_primary(tokens, pos):
         consume(tokens, pos)
         return node
     raise ValueError("Unexpected token: " + str(token))
-
-def peek(tokens, pos):
-    return tokens[pos[0]]
  
-def consume(tokens, pos):
-    token = tokens[pos[0]]
-    pos[0] += 1
 
-# Tree
+
+#tree 
 def tree_to_string(node):
     kind = node[0]
     if kind == "num":
@@ -131,44 +133,42 @@ def evaluate(node):
                 raise ValueError("Division by zero")
             return l / r
  
- #result
+#result
 def format_result(value):
     if value == int(value):
         return str(int(value))
     return str(round(value, 4))
-
-# evaluate the input file
+ 
+ 
+#evaluate file
 def evaluate_file(input_path: str) -> list[dict]:
     f = open(input_path, "r")
     lines = f.readlines()
     f.close()
-
+ 
     all_results  = []
     output_lines = []
     first_block  = True
-
+ 
     for line in lines:
         expression = line.rstrip("\n")
-        tokens     = tokenise(expression)
-    #  print(tokens)
-        expression = line.rstrip("\n")
-        tokens_str = tree_str = result_str = "ERROR"
+        tokens_str = "ERROR"
+        tree_str   = "ERROR"
         result_val = "ERROR"
-
+        result_str = "ERROR"
         try:
-            tokens = tokenise(expression)
+            tokens     = tokenise(expression)
             tokens_str = tokens_to_string(tokens)
-
-            pos = [0]
-            tree = parse_expr(tokens, pos)
-
-            if peek(tokens, pos)["type"] == "END":
-                tree_str = tree_to_string(tree)
-                result_val = evaluate(tree)
-                result_str = format_result(result_val)
-
+            pos        = [0]
+            tree       = parse_expr(tokens, pos)
+            if peek(tokens, pos)["type"] != "END":
+                raise ValueError("Unexpected token: " + str(peek(tokens, pos)))
+            tree_str   = tree_to_string(tree)
+            result_val = evaluate(tree)
+            result_str = format_result(result_val)
         except Exception:
             pass
+ 
         all_results.append({"input": expression, "tree": tree_str, "tokens": tokens_str, "result": result_val})
  
         if not first_block:
@@ -179,13 +179,14 @@ def evaluate_file(input_path: str) -> list[dict]:
         output_lines.append("Tokens: " + tokens_str)
         output_lines.append("Result: " + result_str)
  
-    g = open("Question2/output.txt", "w")
+    g = open('Question2/output.txt', "w")
     for line in output_lines:
         g.write(line + "\n")
     g.close()
  
     return all_results
 
-
 # main body
 results = evaluate_file("Question2/input.txt")
+# for r in results:
+#     print(r)
