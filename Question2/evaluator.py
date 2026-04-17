@@ -186,6 +186,7 @@ def evaluate_file(input_path: str) -> list[dict]:
 
 def main():
     evaluate_file("Question2/input.txt")
+    print('Program Completed: Check Output.txt file')
 
 #calling main function
 main()
