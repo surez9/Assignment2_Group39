@@ -1,17 +1,17 @@
-Input: 1 + 5
-Tree: (+ 1 5)
-Tokens: [NUM:1] [OP:+] [NUM:5] [END]
-Result: 6
+Input: 3 + 5
+Tree: (+ 3 5)
+Tokens: [NUM:3] [OP:+] [NUM:5] [END]
+Result: 8
 
-Input: 2 + 1 * 4
-Tree: (+ 2 (* 1 4))
-Tokens: [NUM:2] [OP:+] [NUM:1] [OP:*] [NUM:4] [END]
-Result: 6
+Input: 2 + 3 * 4
+Tree: (+ 2 (* 3 4))
+Tokens: [NUM:2] [OP:+] [NUM:3] [OP:*] [NUM:4] [END]
+Result: 14
 
-Input: -(1 + 4)
-Tree: (neg (+ 1 4))
-Tokens: [OP:-] [LPAREN:(] [NUM:1] [OP:+] [NUM:4] [RPAREN:)] [END]
-Result: -5
+Input: -(3 + 4)
+Tree: (neg (+ 3 4))
+Tokens: [OP:-] [LPAREN:(] [NUM:3] [OP:+] [NUM:4] [RPAREN:)] [END]
+Result: -7
 
 Input: --5
 Tree: (neg (neg 5))

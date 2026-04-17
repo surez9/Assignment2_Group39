@@ -10,7 +10,7 @@
         Aiden Xie - S398508
 '''
 
- # tokenizer
+# tokenizer
 def tokenise(text):
     tokens = []
     i = 0
@@ -152,10 +152,8 @@ def evaluate_file(input_path: str) -> list[dict]:
  
     for line in lines:
         expression = line.rstrip("\n")
-        tokens_str = "ERROR"
-        tree_str   = "ERROR"
+        tokens_str = result_str = tree_str = "ERROR"
         result_val = "ERROR"
-        result_str = "ERROR"
         try:
             tokens     = tokenise(expression)
             tokens_str = tokens_to_string(tokens)
@@ -186,7 +184,8 @@ def evaluate_file(input_path: str) -> list[dict]:
  
     return all_results
 
-# main body
-results = evaluate_file("Question2/input.txt")
-# for r in results:
-#     print(r)
+def main():
+    evaluate_file("Question2/input.txt")
+
+#calling main function
+main()
